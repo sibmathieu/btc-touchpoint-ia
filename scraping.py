@@ -1,23 +1,27 @@
-import whisper_timestamped as whisper
-import numpy as np
-from moviepy.editor import VideoFileClip
 import json
+
+import numpy as np
+import whisper_timestamped as whisper
+from moviepy.editor import VideoFileClip
 
 # Charger le modèle Whisper Timestamped
 model = whisper.load_model("tiny", device="cpu")
 
 # Chemin de la vidéo MP4
-video_path = "BitcoinForEverybody_0_Intro.mp4"
+video_path = "2.mov"
 
 # Extraire l'audio de la vidéo en utilisant moviepy
-video = VideoFileClip(video_path)
-audio = video.audio.to_soundarray()
+# video = VideoFileClip(video_path)
+# audio = video.audio.to_soundarray()
 
+# Ca marche mieux avec ça
+audio = whisper.load_audio("nom_de_la_video.mp4")
+audio = whisper.pad_or_trim(audio)
 
 sample_rate = 44100  # Fréquence d'échantillonnage standard pour l'audio
 
 # Définir la longueur des segments audio en secondes
-segment_length = 10  
+segment_length = 10
 
 # Diviser l'audio en segments plus petits
 num_samples_per_segment = int(segment_length * sample_rate)
@@ -34,8 +38,3 @@ for i, segment in enumerate(audio_segments):
 for i, result in enumerate(transcriptions):
     print(f"Transcription pour le segment {i + 1}:")
     print(json.dumps(result, indent=2, ensure_ascii=False))
-
-
-
-
-
